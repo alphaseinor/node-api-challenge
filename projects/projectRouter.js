@@ -4,7 +4,6 @@ const projectDb = require('../data/helpers/projectModel')
 const router = express.Router()
 
 router.get('/', (req, res) => {
-  //res.send(`Project Endpoint`)
   projectDb.get()
     .then(users => {
       res.status(200).json(users)
@@ -17,7 +16,15 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  res.send(`Project Endpoint ${req.params.id}`)
+  projectDb.get(req.params.id)
+    .then(post => {
+      post.id !== null ? res.status(200).json(post) : res.status(404).json({
+        message: "The post with the specified ID does not exist."
+      })
+    })
+    .catch(error => {
+      res.status(500).json({error: "The post information could not be retrieved."})
+    })
 })
 
 
