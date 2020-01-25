@@ -1,19 +1,23 @@
 const express = require('express');
 const helmet = require('helmet')
+const cors = require('cors')
 const projectRouter = require('./projects/projectRouter')
 const actionRouter = require('./actions/actionRouter')
-const ActionByProject = require('./actions/ActionByProject')
+//const ActionByProject = require('./actions/ActionByProject')
 
 const server = express();
 
 // 3rd party middleware
+
 server.use(express.json())
 server.use(helmet())
 server.use(logger)
+server.use(cors())
+
 
 server.use('/api/projects/', projectRouter)
 server.use('/api/actions/', actionRouter)
-server.use('/api/actionsbyproject', ActionByProject)
+//server.use('/api/actionsbyproject', ActionByProject)
 
 server.get('/', (req, res) => {
   res.send(`Sprint Challenge`);
