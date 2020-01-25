@@ -1,10 +1,9 @@
 const express = require('express')
 const projectDb = require('../data/helpers/projectModel')
-const actionDb = require('../data/helpers/actionModel')
 
-const router = express.Router()
+const projectRouter = express.Router()
 
-router.get('/', (req, res) => {
+projectRouter.get('/', (req, res) => {
   projectDb.get()
     .then(projects => {
       res.status(200).json(projects)
@@ -16,10 +15,11 @@ router.get('/', (req, res) => {
     })  
 })
 
-router.get('/:id', (req, res) => {
+projectRouter.get('/:id', (req, res) => {
+  console.log(`getting id ${req.params.id}`)
   projectDb.get(req.params.id)
     .then(project => {
-      post.id !== null ? res.status(200).json(project) : res.status(404).json({
+      project.id !== null ? res.status(200).json(project) : res.status(404).json({
         message: "The project with the specified ID does not exist."
       })
     })
@@ -29,7 +29,7 @@ router.get('/:id', (req, res) => {
 })
 
 
-router.post('/', (req, res) => {
+projectRouter.post('/', (req, res) => {
   projectDb.insert(req.body)
   .then(project => {
     res.status(201).json(project)
@@ -40,7 +40,7 @@ router.post('/', (req, res) => {
   })
 })
 
-router.put('/:id', (req, res) => {
+projectRouter.put('/:id', (req, res) => {
   projectDb.update(req.params.id, req.body)
     .then(updatedProject => {
       res.status(200).json(updatedProject)
@@ -50,7 +50,7 @@ router.put('/:id', (req, res) => {
     })
 });
 
-router.delete('/:id', (req, res) => {
+projectRouter.delete('/:id', (req, res) => {
   projectDb.remove(req.params.id)
     .then(deleted => {
         res.status(200).json({message: `removed ${deleted} item`})
@@ -62,4 +62,4 @@ router.delete('/:id', (req, res) => {
 
 
 
-module.exports = router
+module.exports = projectRouter

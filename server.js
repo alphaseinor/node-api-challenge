@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet')
 const projectRouter = require('./projects/projectRouter')
 const actionRouter = require('./actions/actionRouter')
+const ActionByProject = require('./actions/ActionByProject')
 
 const server = express();
 
@@ -12,6 +13,7 @@ server.use(logger)
 
 server.use('/api/projects/', projectRouter)
 server.use('/api/actions/', actionRouter)
+server.use('/api/actionsbyproject', ActionByProject)
 
 server.get('/', (req, res) => {
   res.send(`Sprint Challenge`);
