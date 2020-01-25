@@ -1,42 +1,103 @@
 const express = require('express')
 const projectDb = require('../data/helpers/projectModel')
+const actionDb = require('../data/helpers/actionModel')
 
 const router = express.Router()
 
 router.get('/', (req, res) => {
   projectDb.get()
-    .then(users => {
-      res.status(200).json(users)
+    .then(projects => {
+      res.status(200).json(projects)
     })
     .catch(error => {
       res.status(500).json({
-        error: "The posts information could not be retrieved."
+        message: "The project information could not be retrieved."
       })
     })  
 })
 
 router.get('/:id', (req, res) => {
   projectDb.get(req.params.id)
-    .then(post => {
-      post.id !== null ? res.status(200).json(post) : res.status(404).json({
-        message: "The post with the specified ID does not exist."
+    .then(project => {
+      post.id !== null ? res.status(200).json(project) : res.status(404).json({
+        message: "The project with the specified ID does not exist."
       })
     })
     .catch(error => {
-      res.status(500).json({error: "The post information could not be retrieved."})
+      res.status(500).json({message: "The project information could not be retrieved."})
     })
 })
 
+
 router.post('/', (req, res) => {
   projectDb.insert(req.body)
-  .then(user => {
-    res.status(201).json(user)
+  .then(project => {
+    res.status(201).json(project)
   })
   .catch(error => {
     console.log(error)
-    res.status(500).json({error: "There was an error while saving the post to the database"})
+    res.status(500).json({message: "There was an error while saving the project to the database"})
   })
 })
 
+router.put('/:id', (req, res) => {
+  projectDb.update(req.params.id, req.body)
+    .then(updatedProject => {
+      res.status(200).json(updatedProject)
+    })
+    .catch(error => {
+      res.status(500).json({message:"unable to update project"})
+    })
+});
+
+router.delete('/:id', (req, res) => {
+  projectDb.remove(req.params.id)
+    .then(deleted => {
+        res.status(200).json({message: `removed ${deleted} item`})
+    })
+    .catch(error=> {
+      res.status(500).json({message: "unable to delete project"})
+    })
+});
+
+//actions
+
+router.get('/actions/:id', (req, res) => {
+  actionDb.get(req.params.id)
+    .then(actions => {
+      res.status(200).json(actions)
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "The action information could not be retrieved."
+      })
+    })  
+})
+
+router.post('/actions', validateProjectId, (req, res) => {
+  actionDb.insert(req.body)
+  .then(project => {
+    res.status(201).json(project)
+  })
+  .catch(error => {
+    console.log(error)
+    res.status(500).json({message: "There was an error while saving the project to the database"})
+  })
+})
+
+
+
+
+function validateProjectId(req, res, next){
+  const id = req.body.project_id
+
+  projectDb.get(id)
+  .catch(()=>{
+      res.status(400).json({message: "validateProjectID Project does not exist"})
+  })
+
+
+  next();
+}
 
 module.exports = router
