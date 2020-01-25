@@ -27,5 +27,16 @@ router.get('/:id', (req, res) => {
     })
 })
 
+router.post('/', (req, res) => {
+  projectDb.insert(req.body)
+  .then(user => {
+    res.status(201).json(user)
+  })
+  .catch(error => {
+    console.log(error)
+    res.status(500).json({error: "There was an error while saving the post to the database"})
+  })
+})
+
 
 module.exports = router
